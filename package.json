@@ -1,0 +1,35 @@
+{
+  "name": "do-signed-url",
+  "version": "1.0.0",
+  "description": "get signed url to upload temp files on digital ocean spaces",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.js",
+    "lint": "eslint .",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "14"
+  },
+  "author": "Cairo G. Resendiz",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.973.0",
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "firebase-admin": "^9.11.1",
+    "firebase-functions": "^3.15.4"
+  },
+  "devDependencies": {
+    "eslint": "^7.6.0",
+    "eslint-config-google": "^0.14.0",
+    "firebase-functions-test": "^0.2.0"
+  },
+  "private": true
+}
