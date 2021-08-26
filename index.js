@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 const runtimeOpts = {
   timeoutSeconds: 540,
-  memory: "4GB",
+  memory: "128MB",
 };
 
 

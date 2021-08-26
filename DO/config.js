@@ -1,7 +1,4 @@
 const aws = require("aws-sdk");
-/**
- * DigitalOcean endpoint spaces
- */
 const functions = require("firebase-functions");
 const DO = {
   AWS_REGION: functions.config().do.region || "nyc3",
@@ -10,14 +7,15 @@ const DO = {
   AWS_BUCKET: functions.config().do.bucket,
 };
 
+/**
+ * DigitalOcean endpoint spaces
+ */
 // eslint-disable-next-line max-len
 const spacesEndpoint = new aws.Endpoint(`${DO.AWS_REGION}.digitaloceanspaces.com`);
 
 /**
  * S3 from aws-sdk to set up the digitalOcean endpoint
  */
-
-
 
 const s3 = new aws.S3({
   endpoint: spacesEndpoint,
