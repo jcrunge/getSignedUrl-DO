@@ -39,7 +39,7 @@ firebase functions:log
 
 
 ### Example usage: 
-parameters you can use for [mimetype]('https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types')
+parameters you can use for [mimetype](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types)
 #### cURL
 ``` Bash
 curl --location --request GET 'https://<service url>/api/file/signed/url?mimetype=image/png'
