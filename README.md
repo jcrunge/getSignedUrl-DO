@@ -17,7 +17,7 @@ ngrok http 4000
 
 Define tus variables de entorno
 ``` Bash
-firebase functions:config:set do.keyid="<key id DO>" do.secretaccesskey="<secret key DO>" do.bucket="<bucket>" url.transcoding="<ngrok URL>/file/notification"
+firebase functions:config:set do.keyid="<key id DO>" do.secretaccesskey="<secret key DO>" do.bucket="<bucket>" do.region="<sfo3 | nyc3 | ...>"
 ```
 Comando para verificar tus variables de entorno
 ``` Bash
