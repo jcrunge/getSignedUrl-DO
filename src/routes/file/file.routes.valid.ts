@@ -6,11 +6,13 @@ import {
 } from 'express-joi-validation'
 
 export const signedSchema = Joi.object({
-    mimetype: Joi.string().required()
+    mimetype: Joi.string().required(),
+    bucket: Joi.string()
 })
 
 export interface signedRequestSchema extends ValidatedRequestSchema {
     [ContainerTypes.Query]: {
-        mimetype: string
+        mimetype: string,
+        bucket?: string
     }
 }
