@@ -4,7 +4,7 @@ import {IS3Response, IAmazonClass} from './IAmazon'
 export type emptyPromiseResponse = () => Promise<ControllerResponse>
 
 export interface IFileClass {
-	mimetype: string,
+	mimetype: string | null,
 	aws: IAmazonClass,
 	signed: emptyPromiseResponse
 }

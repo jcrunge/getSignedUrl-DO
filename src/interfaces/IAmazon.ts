@@ -3,13 +3,13 @@
 export type stringPromiseUrl = (s: string) => Promise<IS3Response>
 
 export interface IAmazonClass {
-	bucket: string,
+	bucket: string | null,
 	s3: any,
 	getUrl: stringPromiseString
 }
 
 export interface IS3Params {
-	Bucket: string,
+	Bucket: string | null,
 	Expires: number,
 	ACL: string,
 	Key?: string,
@@ -28,5 +28,7 @@ export interface IS3Response {
 	status: boolean,
 	url?: string,
 	nameFile?: string,
-	error?: string
+	error?: any
 }
+
+//export type IS3ResponsePromise = Promise.resolve<type>(bluebirdPromise);

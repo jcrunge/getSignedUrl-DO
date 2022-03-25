@@ -1,5 +1,5 @@
 import AWS from 'aws-sdk';
-import {IAmazonClass, stringPromiseUrl, IS3Params, IS3Config } from '../interfaces/IAmazon';
+import {IAmazonClass, stringPromiseUrl, IS3Params, IS3Config, IS3Response } from '../interfaces/IAmazon';
 import {v4} from "uuid";
 import Bluebird from "bluebird"
 
@@ -13,7 +13,7 @@ export default class Amazon implements IAmazonClass{
 	}
 
 	public getUrl: stringPromiseUrl = async (mimetype) => {
-		let response: IS3Response;
+		let response: IS3Response
 		try {
 			const s3Params: IS3Params = {
 				Bucket: this.bucket,
@@ -24,29 +24,35 @@ export default class Amazon implements IAmazonClass{
 			const fileName = `${v4()}.${typeFile}`;
 			s3Params.Key =`temp/${fileName}`;
 			s3Params.ContentType = mimetype;
-			response = new Bluebird((resolve, reject) => {
-				this.s3.getSignedUrl("putObject", s3Params, (err, url) => {
-					if (err) return reject(new Error(err));
-					return resolve({
+			response = await Promise.resolve<IS3Response>(new Bluebird((resolve, reject) => {
+				return this.s3.getSignedUrl("putObject", s3Params, (err, url) => {
+					let resp: IS3Response;
+					if (err) {
+						resp = {
+							status: false,
+					  		error: err.message,
+						}
+						return reject(resp);
+					}
+					resp = {
 						status: true,
 						url: url,
 						nameFile: fileName
-					});
+					}
+					return resolve(resp);
 				});
 			})
 			.catch((e)=>{
-				console.log(e)
 				return {
 				  status: false,
-				  err: e.message,
+				  error: e,
 				};
-			});
+			}))
 		}
 		catch(e) {
-				console.log(e)
 			response = {
 				status: false,
-				err: e.message,
+				error: e,
 			};
 		}
 		return response
