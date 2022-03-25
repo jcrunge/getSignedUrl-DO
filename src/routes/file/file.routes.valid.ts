@@ -11,6 +11,6 @@ export const signedSchema = Joi.object({
 
 export interface signedRequestSchema extends ValidatedRequestSchema {
     [ContainerTypes.Query]: {
-        mimetype: String
+        mimetype: string
     }
 }
