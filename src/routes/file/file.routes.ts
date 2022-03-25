@@ -29,7 +29,8 @@ fileRouter.get('/', (_: Request, res: Response) => {
 
 fileRouter.get('/signed', auth.validAuth, validator.query(signedSchema), async (req: ValidatedRequest<signedRequestSchema>, res: Response) => {
     const {mimetype}  = req.query;
-    const fileObject = new FileController(mimetype)
+    const bucket: string | null = req.query.bucket? req.query.bucket : null
+    const fileObject = new FileController(mimetype, bucket)
     const signedUrl: ControllerResponse = await fileObject.signed()
     return res.json(signedUrl.body).status(signedUrl.status)
 });
