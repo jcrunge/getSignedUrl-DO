@@ -34,8 +34,6 @@ describe('signed url', () => {
         })
         expect(resp).toBe(200);
     })
-
-
 });
 
 server.close();
