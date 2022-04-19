@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express"
 import FileController from '../../controllers/file/FileController'
 import {ControllerResponse} from '../../controllers/BaseController'
+import {IFileData} from '../../interfaces/IFile'
 
 import {
     ValidatedRequest,
@@ -29,7 +30,13 @@ fileRouter.get('/', (_: Request, res: Response) => {
 
 fileRouter.get('/signed', auth.validAuth, validator.query(signedSchema), async (req: ValidatedRequest<signedRequestSchema>, res: Response) => {
     const {mimetype, folder, filename}  = req.query;
-    const fileObject = new FileController(mimetype, folder, filename)
+    const bucket: string | null = req.query.bucket? req.query.bucket : null;
+    const fileData: IFileData = {
+        folder: folder,
+        filename: filename
+    }
+    if(bucket) fileData.bucket = bucket
+    const fileObject = new FileController(mimetype, fileData)
     const signedUrl: ControllerResponse = await fileObject.signed()
     return res.json(signedUrl.body).status(signedUrl.status)
 });

@@ -1,5 +1,12 @@
 import AWS from 'aws-sdk';
-import {IAmazonClass, stringPromiseUrl, IS3Params, IS3Config, IS3Response } from '../interfaces/IAmazon';
+import {
+	IS3Config,
+	IS3Params,
+	IS3Response,
+	IAmazonClass, 
+	stringFilePromiseUrl
+} from '../interfaces/IAmazon';
+import {IFileData} from '../interfaces/IFile'
 import Bluebird from "bluebird"
 
 export default class Amazon implements IAmazonClass{
@@ -11,14 +18,14 @@ export default class Amazon implements IAmazonClass{
         this.s3 = new AWS.S3(config)
 	}
 
-	public getUrl: stringPromiseUrl = async (mimetype: string, folder: string, filename: string) => {
+	public getUrl: stringFilePromiseUrl = async (mimetype: string, fileData: IFileData) => {
 		let response: IS3Response
 		try {
 			const s3Params: IS3Params = {
 				Bucket: this.bucket,
 				Expires: 60 * 60,
 				ACL: "public-read",
-				Key: `${folder}/${filename}`,
+				Key: `${fileData.folder}/${fileData.filename}`,
 				ContentType: mimetype
 			};
 			response = await Promise.resolve<IS3Response>(new Bluebird((resolve, reject) => {
@@ -34,7 +41,7 @@ export default class Amazon implements IAmazonClass{
 					resp = {
 						status: true,
 						url: url,
-						nameFile: filename
+						nameFile: fileData.filename
 					}
 					return resolve(resp);
 				});
