@@ -3,6 +3,7 @@ import app from '../../src/index';
 import { server } from '../../src';
 import axios from 'axios'
 import fs from 'fs'
+import {v4} from "uuid";
 //mport path from 'path'
 import {authToken} from '../../src/config/config'
 
@@ -13,7 +14,13 @@ describe('signed url', () => {
     
 
     test('if signed url is sucesfully created', async () => {
-        const resp = await api.get('/api/file/signed?mimetype=image/png').set({ Authorization: authToken }).send();
+        const resp = await api.get('/api/file/signed')
+        .query({
+            mimetype: 'image/png',
+            folder: 'testfolder',
+            filename: `${v4()}.png`
+        })
+        .set({ Authorization: authToken }).send();
         if(resp.body.url){
             url = resp.body.url
         }
