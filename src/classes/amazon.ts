@@ -1,6 +1,5 @@
 import AWS from 'aws-sdk';
 import {IAmazonClass, stringPromiseUrl, IS3Params, IS3Config, IS3Response } from '../interfaces/IAmazon';
-import {v4} from "uuid";
 import Bluebird from "bluebird"
 
 export default class Amazon implements IAmazonClass{
@@ -12,18 +11,16 @@ export default class Amazon implements IAmazonClass{
         this.s3 = new AWS.S3(config)
 	}
 
-	public getUrl: stringPromiseUrl = async (mimetype) => {
+	public getUrl: stringPromiseUrl = async (mimetype: string, folder: string, filename: string) => {
 		let response: IS3Response
 		try {
 			const s3Params: IS3Params = {
 				Bucket: this.bucket,
 				Expires: 60 * 60,
 				ACL: "public-read",
+				Key: `${folder}/${filename}`,
+				ContentType: mimetype
 			};
-	        const typeFile = mimetype.split("/")[1];
-			const fileName = `${v4()}.${typeFile}`;
-			s3Params.Key =`temp/${fileName}`;
-			s3Params.ContentType = mimetype;
 			response = await Promise.resolve<IS3Response>(new Bluebird((resolve, reject) => {
 				return this.s3.getSignedUrl("putObject", s3Params, (err, url) => {
 					let resp: IS3Response;
@@ -37,7 +34,7 @@ export default class Amazon implements IAmazonClass{
 					resp = {
 						status: true,
 						url: url,
-						nameFile: fileName
+						nameFile: filename
 					}
 					return resolve(resp);
 				});

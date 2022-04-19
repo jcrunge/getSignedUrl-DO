@@ -1,11 +1,11 @@
 //import {} from 'aws-sdk'
 
-export type stringPromiseUrl = (s: string) => Promise<IS3Response>
+export type stringPromiseUrl = (m: string, f: string, n: string) => Promise<IS3Response>
 
 export interface IAmazonClass {
 	bucket: string | null,
 	s3: any,
-	getUrl: stringPromiseString
+	getUrl: stringPromiseUrl
 }
 
 export interface IS3Params {

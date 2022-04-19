@@ -1,5 +1,5 @@
 import {ControllerResponse} from '../controllers/BaseController'
-import {IS3Response, IAmazonClass} from './IAmazon'
+import {IAmazonClass} from './IAmazon'
 
 export type emptyPromiseResponse = () => Promise<ControllerResponse>
 
