@@ -24,6 +24,8 @@ export const AWSCredentials: AmazonCredentials = {
     region: process.env.AWS_REGION ? process.env.AWS_REGION as string : ''
 };
 
+export const bucketDefault: string = process.env.BUCKET_DEFAULT ? process.env.BUCKET_DEFAULT as string : '';
+
 export const authToken: string = process.env.AUTH_TOKEN ? process.env.AUTH_TOKEN as string : '';
 
 export const errorManagement: boolean = process.env.ERROR_MANAGEMENT === 'true' ? true : false

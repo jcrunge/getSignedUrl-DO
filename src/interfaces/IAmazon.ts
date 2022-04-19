@@ -21,7 +21,8 @@ export interface IS3Config {
 	region?: string,
 	accessKeyId?: string,
 	secretAccessKey?: string,
-	signatureVersion?: string
+	signatureVersion?: string,
+	apiVersion?: string
 }
 
 export interface IS3Response {
