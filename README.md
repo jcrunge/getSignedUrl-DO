@@ -1,52 +1,53 @@
-# encoding-functions
+# S3 Signed Url Service
 
-#### Antes de empezar
-Instalar localmente [Firebase CLI](https://firebase.google.com/docs/cli#install_the_firebase_cli)
+The purpose of this email service is to have a service for creating signed url to Amazon S3 service
 
-#### Pasos para iniciar proyecto localmente
+### Installation
 
-``` Bash
-cd functions && npm i
+First, you need to clone this repo
+
+```
+git clone https://github.com/erikfer94/getSignedUrl-DO.git <folder>
 ```
 
-Define tus variables de entorno
-``` Bash
-firebase functions:config:set do.keyid="<key id DO>" do.secretaccesskey="<secret key DO>" do.bucket="<bucket>" do.region="<sfo3 | nyc3 | ...>"
+Once this repo is cloned, enter to the new folder and make a copy of `.env.dummy` called `.env`
 ```
-Comando para verificar tus variables de entorno
-``` Bash
-firebase functions:config:get
-```
-Comando para pasar tus variables de entorno a la ejecución local de firebase
-``` Bash
-firebase functions:config:get > .runtimeconfig.json
+cp .env.test .env
 ```
 
-Ejecutrar localmente firebase
-``` Bash
-firebase emulators:start  
-```
-
-Hacer deploy de tus cambios
-``` Bash
-firebase deploy
-```
-
-Para ver los logs de tu deploy puedes correr el siguiente comando
-``` Bash
-firebase functions:log   
-```
+Set your own environment values on this env file.
 
 
-### Example usage: 
-parameters you can use for [mimetype](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types)
-#### cURL
-``` Bash
-curl --location --request GET 'https://<service url>/api/file/signed/url?mimetype=image/png'
+### Initialize
+
+Run this command
+```
+npm install
 ```
 
-#### NodeJS - Axios
-``` JavaScript
-const mimetype = "image/png";
-axios.get("https://<service url>/api/file/signed/url?mimetype="+mimetype)
+### Running
+
+If you want to run this project for making some manual testing or for modifying the code
 ```
+npm run dev
+```
+
+### Testing
+
+This project has configured unit testing with `jest`, if you want to run the test enter the next command
+
+```
+npm run test
+```
+
+Please, remmember to add a new test if you add some new stuffs
+
+### Building
+
+For compile this project run
+
+```
+npm run build
+```
+
+This command will generate a `./dist` folder where the compiled version of the application will be located.
