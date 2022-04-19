@@ -9,6 +9,7 @@ export const signedSchema = Joi.object({
     mimetype: Joi.string().required(),
     folder: Joi.string().required(),
     filename: Joi.string().required(),
+    bucket: Joi.string()
 })
 
 export interface signedRequestSchema extends ValidatedRequestSchema {
@@ -16,5 +17,6 @@ export interface signedRequestSchema extends ValidatedRequestSchema {
         mimetype: string,
         folder: string,
         filename: string
+        bucket?: string
     }
 }
