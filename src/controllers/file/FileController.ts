@@ -2,6 +2,7 @@ import {IFileClass, emptyPromiseResponse } from '../../interfaces/IFile';
 import {IS3Response, IAmazonClass} from '../../interfaces/IAmazon'
 import Amazon from '../../classes/amazon';
 import BaseController from '../BaseController'
+import {bucketDefault} from '../../config/config';
 
 export default class FileController extends BaseController implements IFileClass{
 	mimetype: string;
@@ -14,7 +15,7 @@ export default class FileController extends BaseController implements IFileClass
         this.mimetype = mimetype;
         this.folder = folder;
         this.filename = filename;
-        this.aws = new Amazon("priamstorage", {signatureVersion: 'v4'});
+        this.aws = new Amazon(bucket || bucketDefault, {signatureVersion: 'v4'});
 	}
 
     public signed: emptyPromiseResponse = async () => {
