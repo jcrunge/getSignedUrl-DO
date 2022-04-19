@@ -1,11 +1,11 @@
-//import {} from 'aws-sdk'
+import {IFileData} from './IFile'
 
-export type stringPromiseUrl = (s: string) => Promise<IS3Response>
+export type stringFilePromiseUrl = (m: string, fd: IFileData) => Promise<IS3Response>
 
 export interface IAmazonClass {
 	bucket: string | null,
 	s3: any,
-	getUrl: stringPromiseString
+	getUrl: stringFilePromiseUrl
 }
 
 export interface IS3Params {
