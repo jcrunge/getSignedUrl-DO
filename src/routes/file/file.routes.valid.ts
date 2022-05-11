@@ -20,3 +20,17 @@ export interface signedRequestSchema extends ValidatedRequestSchema {
         bucket?: string
     }
 }
+
+export const deleteSchema = Joi.object({
+    folder: Joi.string().required(),
+    filename: Joi.string().required(),
+    bucket: Joi.string()
+})
+
+export interface deleteRequestSchema extends ValidatedRequestSchema {
+    [ContainerTypes.Query]: {
+        folder: string,
+        filename: string
+        bucket?: string
+    }
+}

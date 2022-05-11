@@ -8,6 +8,7 @@ import {v4} from "uuid";
 import {authToken} from '../../src/config/config'
 
 const api = supertest(app);
+const filename:string = `${v4()}.png`
 
 let url: string = "";
 describe('signed url', () => {
@@ -18,7 +19,7 @@ describe('signed url', () => {
         .query({
             mimetype: 'image/png',
             folder: 'testfolder',
-            filename: `${v4()}.png`
+            filename: filename
         })
         .set({ Authorization: authToken }).send();
         if(resp.body.url){
@@ -40,6 +41,16 @@ describe('signed url', () => {
             return response.status
         })
         expect(resp).toBe(200);
+    })
+
+    test('if file is successfully deleted', async () => {
+        const resp = await api.delete('/api/file/delete')
+        .query({
+            folder: 'testfolder',
+            filename: filename
+        })
+        .set({ Authorization: authToken }).send();
+        expect(resp.body).toHaveProperty("name");
     })
 });
 
