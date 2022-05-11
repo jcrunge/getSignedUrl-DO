@@ -8,6 +8,7 @@ export interface IFileClass {
 	fileData: IFileData,
 	aws: IAmazonClass,
 	signed: emptyPromiseResponse
+	delete: emptyPromiseResponse
 }
 
 export interface IFileData {
