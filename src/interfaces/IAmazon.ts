@@ -1,18 +1,20 @@
 import {IFileData} from './IFile'
 
 export type stringFilePromiseUrl = (m: string, fd: IFileData) => Promise<IS3Response>
+export type filePromiseBooelan = (fd: IFileData) => Promise<IS3Response>
 
 export interface IAmazonClass {
 	bucket: string | null,
 	s3: any,
-	getUrl: stringFilePromiseUrl
+	getUrl: stringFilePromiseUrl,
+	deleteFile: filePromiseBooelan
 }
 
 export interface IS3Params {
-	Bucket: string | null,
-	Expires: number,
-	ACL: string,
-	Key?: string,
+	Bucket: string,
+	Expires?: number,
+	ACL?: string,
+	Key: string,
 	ContentType?: string
 }
 

@@ -9,7 +9,7 @@ export default class FileController extends BaseController implements IFileClass
     fileData: IFileData;
     aws: IAmazonClass;
 
-	constructor (mimetype: string, fileData: IFileData) {
+	constructor (fileData: IFileData, mimetype: string = "text/plain") {
 		super()
         this.mimetype = mimetype;
         this.fileData = fileData;
@@ -17,7 +17,7 @@ export default class FileController extends BaseController implements IFileClass
 	}
 
     public signed: emptyPromiseResponse = async () => {
-    	const signedUrl: IS3Response = await this.aws.getUrl(this.mimetype, this.fileData);
+        const signedUrl: IS3Response = await this.aws.getUrl(this.mimetype, this.fileData);
         if(signedUrl.status){
             return this.makeResponse({
                 url: signedUrl.url || "", 
@@ -27,6 +27,21 @@ export default class FileController extends BaseController implements IFileClass
         else{
             return this.makeResponse({
                 error: signedUrl.error || ""
+            }, 500);
+        }
+        
+    }
+
+    public delete: emptyPromiseResponse = async () => {
+        const deletedFile: IS3Response = await this.aws.deleteFile(this.fileData);
+        if(deletedFile.status){
+            return this.makeResponse({
+                name: deletedFile.nameFile || ""
+            }, 200);
+        }
+        else{
+            return this.makeResponse({
+                error: deletedFile.error || ""
             }, 500);
         }
         
