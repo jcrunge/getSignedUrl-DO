@@ -71,7 +71,7 @@ export default class Amazon implements IAmazonClass{
 				Key: `${fileData.folder}/${fileData.filename}`,
 			};
 			response = await Promise.resolve<IS3Response>(new Bluebird((resolve, reject) => {
-				return this.s3.deleteObject(s3Params, (err, url) => {
+				return this.s3.deleteObject(s3Params, (err) => {
 					let resp: IS3Response;
 					if (err) {
 						resp = {
