@@ -1,4 +1,4 @@
-import {IFileClass, emptyPromiseResponse, IFileData } from '../../interfaces/IFile';
+import {IFileClass, emptyPromiseResponse, stringPromiseResponse, IFileData } from '../../interfaces/IFile';
 import {IS3Response, IAmazonClass} from '../../interfaces/IAmazon'
 import Amazon from '../../classes/amazon';
 import BaseController from '../BaseController'
@@ -45,6 +45,20 @@ export default class FileController extends BaseController implements IFileClass
             }, 500);
         }
         
+    }
+
+    public copy: stringPromiseResponse = async (from: string) => {
+        const copiedfile: IS3Response = await this.aws.copyObject(from, this.fileData);
+        if(copiedfile.status){
+            return this.makeResponse({
+                name: copiedfile.nameFile || ""
+            }, 200);
+        }
+        else{
+            return this.makeResponse({
+                error: copiedfile.error || ""
+            }, 500);
+        }
     }
 
 }

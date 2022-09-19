@@ -2,6 +2,7 @@ import {S3} from 'aws-sdk';
 import {
 	IS3Config,
 	IS3Params,
+	IS3Copy,
 	IS3Response,
 	IAmazonClass, 
 	filePromiseBooelan,
@@ -72,6 +73,47 @@ export default class Amazon implements IAmazonClass{
 			};
 			response = await Promise.resolve<IS3Response>(new Bluebird((resolve, reject) => {
 				return this.s3.deleteObject(s3Params, (err) => {
+					let resp: IS3Response;
+					if (err) {
+						resp = {
+							status: false,
+					  		error: err.message,
+						}
+						return reject(resp);
+					}
+					resp = {
+						status: true,
+						nameFile: fileData.filename
+					}
+					return resolve(resp);
+				});
+			})
+			.catch((e)=>{
+				return {
+				  status: false,
+				  error: e,
+				};
+			}))
+		}
+		catch(e) {
+			response = {
+				status: false,
+				error: e,
+			};
+		}
+		return response
+    }
+
+    public copyObject: stringFilePromiseUrl = async (from: string, fileData: IFileData) => {
+    	let response: IS3Response
+    	try {
+			const s3Params: IS3Copy = {
+				Bucket: this.bucket,
+				Key: `${fileData.folder}/${fileData.filename}`,
+				CopySource: from
+			};
+			response = await Promise.resolve<IS3Response>(new Bluebird((resolve, reject) => {
+				return this.s3.copyObject(s3Params, (err) => {
 					let resp: IS3Response;
 					if (err) {
 						resp = {
