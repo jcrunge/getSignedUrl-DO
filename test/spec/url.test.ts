@@ -9,17 +9,29 @@ import {authToken} from '../../src/config/config'
 
 const api = supertest(app);
 const filename:string = `${v4()}.png`
+const bucket:string = 'priamdev'
 
 let url: string = "";
 describe('signed url', () => {
     
+
+    afterAll(async () => {
+        await api.delete('/api/file/delete')
+        .query({
+            folder: 'testfolder',
+            filename: "copy_"+ filename,
+            bucket: bucket
+        })
+        .set({ Authorization: authToken }).send();
+    })
 
     test('if signed url is sucesfully created', async () => {
         const resp = await api.get('/api/file/signed')
         .query({
             mimetype: 'image/png',
             folder: 'testfolder',
-            filename: filename
+            filename: filename,
+            bucket: bucket
         })
         .set({ Authorization: authToken }).send();
         if(resp.body.url){
@@ -43,11 +55,24 @@ describe('signed url', () => {
         expect(resp).toBe(200);
     })
 
+    test('if file is successfully copied', async () => {
+        const resp = await api.get('/api/file/copy')
+        .query({
+            folder: 'testfolder',
+            filename: "copy_"+ filename,
+            from: bucket + '/testfolder/' + filename,
+            bucket: bucket
+        })
+        .set({ Authorization: authToken }).send();
+        expect(resp.body).toHaveProperty("name");
+    })
+
     test('if file is successfully deleted', async () => {
         const resp = await api.delete('/api/file/delete')
         .query({
             folder: 'testfolder',
-            filename: filename
+            filename: filename,
+            bucket: bucket
         })
         .set({ Authorization: authToken }).send();
         expect(resp.body).toHaveProperty("name");

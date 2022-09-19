@@ -13,6 +13,8 @@ import {
     signedRequestSchema,
     deleteSchema,
     deleteRequestSchema,
+    copySchema,
+    copyRequestSchema,
 } from "./file.routes.valid";
 
 import Middleware from "../../middleware/middleware";
@@ -53,6 +55,19 @@ fileRouter.delete('/delete', auth.validAuth, validator.query(deleteSchema), asyn
     if(bucket) fileData.bucket = bucket
     const fileObject = new FileController(fileData)
     const deletedFile: ControllerResponse = await fileObject.delete()
+    return res.json(deletedFile.body).status(deletedFile.status)
+});
+
+fileRouter.get('/copy', auth.validAuth, validator.query(copySchema), async (req: ValidatedRequest<copyRequestSchema>, res: Response) => {
+    const {folder, filename, from}  = req.query;
+    const bucket: string | null = req.query.bucket? req.query.bucket : null;
+    const fileData: IFileData = {
+        folder: folder,
+        filename: filename
+    }
+    if(bucket) fileData.bucket = bucket
+    const fileObject = new FileController(fileData)
+    const deletedFile: ControllerResponse = await fileObject.copy(from)
     return res.json(deletedFile.body).status(deletedFile.status)
 });
 
