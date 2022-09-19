@@ -2,6 +2,7 @@ import {ControllerResponse} from '../controllers/BaseController'
 import {IAmazonClass} from './IAmazon'
 
 export type emptyPromiseResponse = () => Promise<ControllerResponse>
+export type stringPromiseResponse = (s: string) => Promise<ControllerResponse>
 
 export interface IFileClass {
 	mimetype: string,
@@ -9,6 +10,7 @@ export interface IFileClass {
 	aws: IAmazonClass,
 	signed: emptyPromiseResponse
 	delete: emptyPromiseResponse
+	copy: stringPromiseResponse
 }
 
 export interface IFileData {

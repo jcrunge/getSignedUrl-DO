@@ -7,7 +7,8 @@ export interface IAmazonClass {
 	bucket: string | null,
 	s3: any,
 	getUrl: stringFilePromiseUrl,
-	deleteFile: filePromiseBooelan
+	deleteFile: filePromiseBooelan,
+	copyObject: stringFilePromiseUrl
 }
 
 export interface IS3Params {
@@ -15,7 +16,14 @@ export interface IS3Params {
 	Expires?: number,
 	ACL?: string,
 	Key: string,
-	ContentType?: string
+	ContentType?: string,
+	CopySource?: string
+}
+
+export interface IS3Copy {
+	Bucket: string,
+	Key: string,
+	CopySource: string
 }
 
 export interface IS3Config {
