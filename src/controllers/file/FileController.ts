@@ -1,8 +1,10 @@
+import {S3} from 'aws-sdk';
 import {IFileClass, emptyPromiseResponse, stringPromiseResponse, IFileData } from '../../interfaces/IFile';
-import {IS3Response, IAmazonClass} from '../../interfaces/IAmazon'
+import {IS3Response, IAmazonClass, IS3KeyObject} from '../../interfaces/IAmazon'
 import Amazon from '../../classes/amazon';
 import BaseController from '../BaseController'
 import {bucketDefault} from '../../config/config';
+import Bluebird from "bluebird"
 
 export default class FileController extends BaseController implements IFileClass{
 	mimetype: string;
@@ -57,6 +59,45 @@ export default class FileController extends BaseController implements IFileClass
         else{
             return this.makeResponse({
                 error: copiedfile.error || ""
+            }, 500);
+        }
+    }
+
+    public list: emptyPromiseResponse = async () => {
+        const listedFiles: IS3Response = await this.aws.listObjects(this.fileData);
+        if(listedFiles.status){
+            return this.makeResponse({
+                files: listedFiles.content || []
+            }, 200);
+        }
+        else{
+            return this.makeResponse({
+                error: listedFiles.error || ""
+            }, 500);
+        }
+    }
+
+    public deleteAll: emptyPromiseResponse = async () => {
+        const listedFiles: IS3Response = await this.aws.listObjects(this.fileData);
+        if(listedFiles.status){
+            const files: S3.ObjectList = listedFiles.content || []
+            const filesToDelete: Array<IS3KeyObject> = await Bluebird.map(files, (el) => {
+                return {Key: el.Key || ""}
+            })
+            const deletedFiles: IS3Response = await this.aws.deleteObjects(filesToDelete)
+            
+            if(deletedFiles.status){
+                return this.makeResponse({
+                    files: deletedFiles.deleted || []
+                }, 200);
+            }
+            return this.makeResponse({
+                error: deletedFiles.error || ""
+            }, 500);
+        }
+        else{
+            return this.makeResponse({
+                error: listedFiles.error || ""
             }, 500);
         }
     }
