@@ -15,6 +15,8 @@ import {
     deleteRequestSchema,
     copySchema,
     copyRequestSchema,
+    listSchema,
+    listRequestSchema
 } from "./file.routes.valid";
 
 import Middleware from "../../middleware/middleware";
@@ -67,8 +69,34 @@ fileRouter.get('/copy', auth.validAuth, validator.query(copySchema), async (req:
     }
     if(bucket) fileData.bucket = bucket
     const fileObject = new FileController(fileData)
-    const deletedFile: ControllerResponse = await fileObject.copy(from)
-    return res.json(deletedFile.body).status(deletedFile.status)
+    const copiedFile: ControllerResponse = await fileObject.copy(from)
+    return res.json(copiedFile.body).status(copiedFile.status)
+});
+
+fileRouter.get('/list', auth.validAuth, validator.query(listSchema), async (req: ValidatedRequest<listRequestSchema>, res: Response) => {
+    const {folder}  = req.query;
+    const bucket: string | null = req.query.bucket? req.query.bucket : null;
+    const fileData: IFileData = {
+        folder: folder,
+        filename: "*"
+    }
+    if(bucket) fileData.bucket = bucket
+    const fileObject = new FileController(fileData)
+    const listedFiles: ControllerResponse = await fileObject.list()
+    return res.json(listedFiles.body).status(listedFiles.status)
+});
+
+fileRouter.delete('/deleteAll', auth.validAuth, validator.query(listSchema), async (req: ValidatedRequest<listRequestSchema>, res: Response) => {
+    const {folder}  = req.query;
+    const bucket: string | null = req.query.bucket? req.query.bucket : null;
+    const fileData: IFileData = {
+        folder: folder,
+        filename: "*"
+    }
+    if(bucket) fileData.bucket = bucket
+    const fileObject = new FileController(fileData)
+    const deletedFiles: ControllerResponse = await fileObject.deleteAll()
+    return res.json(deletedFiles.body).status(deletedFiles.status)
 });
 
 

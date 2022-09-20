@@ -50,3 +50,15 @@ export interface copyRequestSchema extends ValidatedRequestSchema {
         bucket?: string
     }
 }
+
+export const listSchema = Joi.object({
+    folder: Joi.string().required(),
+    bucket: Joi.string()
+})
+
+export interface listRequestSchema extends ValidatedRequestSchema {
+    [ContainerTypes.Query]: {
+        folder: string,
+        bucket?: string
+    }
+}
