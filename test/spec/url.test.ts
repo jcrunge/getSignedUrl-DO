@@ -13,17 +13,6 @@ const bucket:string = 'priamdev'
 
 let url: string = "";
 describe('signed url', () => {
-    
-
-    afterAll(async () => {
-        await api.delete('/api/file/delete')
-        .query({
-            folder: 'testfolder',
-            filename: "copy_"+ filename,
-            bucket: bucket
-        })
-        .set({ Authorization: authToken }).send();
-    })
 
     test('if signed url is sucesfully created', async () => {
         const resp = await api.get('/api/file/signed')
@@ -76,6 +65,30 @@ describe('signed url', () => {
         })
         .set({ Authorization: authToken }).send();
         expect(resp.body).toHaveProperty("name");
+    })
+
+    test('if all files in folder are successfully listed', async () => {
+        const resp = await api.get('/api/file/list')
+        .query({
+            folder: 'testfolder',
+            bucket: bucket
+        })
+        .set({ Authorization: authToken }).send();
+        expect(resp.body).toHaveProperty("files");
+        const content = resp.body.files || []
+        expect(content.length).toBeGreaterThan(0)
+    })
+
+    test('if all files in folder are successfully deleted', async () => {
+        const resp = await api.delete('/api/file/deleteAll')
+        .query({
+            folder: 'testfolder',
+            bucket: bucket
+        })
+        .set({ Authorization: authToken }).send();
+        expect(resp.body).toHaveProperty("files");
+        const deleted = resp.body.files || []
+        expect(deleted.length).toBeGreaterThan(0)
     })
 });
 
