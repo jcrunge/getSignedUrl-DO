@@ -15,7 +15,10 @@ export default class FileController extends BaseController implements IFileClass
 		super()
         this.mimetype = mimetype;
         this.fileData = fileData;
-        this.aws = new Amazon(fileData.bucket || bucketDefault, {signatureVersion: 'v4'});
+        this.aws = new Amazon(fileData.bucket || bucketDefault, {
+            signatureVersion: 'v4',
+            useAccelerateEndpoint: true
+        });
 	}
 
     public signed: emptyPromiseResponse = async () => {
