@@ -55,6 +55,7 @@ export interface IS3Config {
 	secretAccessKey?: string,
 	signatureVersion?: string,
 	apiVersion?: string
+	useAccelerateEndpoint?: boolean
 }
 
 export interface IS3Response {
