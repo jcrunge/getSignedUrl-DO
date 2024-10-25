@@ -66,4 +66,9 @@ node_modules/
 .env
 
 # package-lock
-package-lock.json
+# package-lock.json
+
+dist/
+
+.DS_Store
+.idea
