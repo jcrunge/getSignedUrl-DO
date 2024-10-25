@@ -3,8 +3,13 @@ import {IFileClass, emptyPromiseResponse, stringPromiseResponse, IFileData } fro
 import {IS3Response, IAmazonClass, IS3KeyObject} from '../../interfaces/IAmazon'
 import Amazon from '../../classes/amazon';
 import BaseController from '../BaseController'
-import {bucketDefault} from '../../config/config';
+import {bucketDefault, bucketAccelerate} from '../../config/config';
 import Bluebird from "bluebird"
+
+interface IOptionsBucket {
+    useAccelerateEndpoint?: boolean;
+    signatureVersion: string;
+}
 
 export default class FileController extends BaseController implements IFileClass{
 	mimetype: string;
@@ -15,10 +20,15 @@ export default class FileController extends BaseController implements IFileClass
 		super()
         this.mimetype = mimetype;
         this.fileData = fileData;
-        this.aws = new Amazon(fileData.bucket || bucketDefault, {
-            signatureVersion: 'v4',
-            useAccelerateEndpoint: true
-        });
+        let options: IOptionsBucket = {
+            signatureVersion: 'v4'
+        }; 
+
+        if (fileData.bucket === bucketAccelerate) {
+            options.useAccelerateEndpoint = true;
+        }
+
+        this.aws = new Amazon(fileData.bucket || bucketDefault, options);
 	}
 
     public signed: emptyPromiseResponse = async () => {
