@@ -114,7 +114,8 @@ export default class Amazon implements IAmazonClass{
 			const s3Params: IS3Copy = {
 				Bucket: this.bucket,
 				Key: `${fileData.folder}/${fileData.filename}`,
-				CopySource: from
+				CopySource: from,
+				ACL: "public-read"
 			};
 			response = await Promise.resolve<IS3Response>(new Bluebird((resolve, reject) => {
 				return this.s3.copyObject(s3Params, (err) => {

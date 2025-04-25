@@ -35,7 +35,8 @@ export interface IS3Params {
 export interface IS3Copy {
 	Bucket: string,
 	Key: string,
-	CopySource: string
+	CopySource: string,
+	ACL?: string
 }
 
 export interface IS3List {
