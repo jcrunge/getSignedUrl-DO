@@ -2,6 +2,7 @@ import {S3} from 'aws-sdk';
 import {IFileData} from './IFile'
 
 export type stringFilePromiseUrl = (m: string, fd: IFileData) => Promise<IS3Response>
+export type stringPromiseUrl = (route: string) => Promise<IS3Response>
 export type filePromiseBooelan = (fd: IFileData) => Promise<IS3Response>
 export type deleteFilesPromiseBooelan = (files: Array<IS3KeyObject>) => Promise<IS3Response>
 
@@ -13,6 +14,7 @@ export interface IAmazonClass {
 	copyObject: stringFilePromiseUrl,
 	listObjects: filePromiseBooelan,
 	deleteObjects: deleteFilesPromiseBooelan,
+	headObject: stringPromiseUrl,
 }
 
 export interface IS3KeyObject {

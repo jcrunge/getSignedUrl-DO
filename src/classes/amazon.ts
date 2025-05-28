@@ -10,6 +10,7 @@ import {
 	IAmazonClass, 
 	filePromiseBooelan,
 	stringFilePromiseUrl,
+	stringPromiseUrl,
 	deleteFilesPromiseBooelan
 } from '../interfaces/IAmazon';
 import {IFileData} from '../interfaces/IFile'
@@ -209,6 +210,46 @@ export default class Amazon implements IAmazonClass{
 					resp = {
 						status: true,
 						deleted: data.Deleted
+					}
+					return resolve(resp);
+				});
+			})
+			.catch((e)=>{
+				return {
+				  status: false,
+				  error: e,
+				};
+			}))
+		}
+		catch(e) {
+			response = {
+				status: false,
+				error: e,
+			};
+		}
+		return response
+    }
+
+    public headObject: stringPromiseUrl = async (route: string) => {
+    	let response: IS3Response
+    	try {
+			const s3Params: IS3Params = {
+				Bucket: this.bucket,
+				Key: route
+			};
+			response = await Promise.resolve<IS3Response>(new Bluebird((resolve, reject) => {
+				return this.s3.headObject(s3Params, (err) => {
+					let resp: IS3Response;
+					if (err) {
+						resp = {
+							status: false,
+					  		error: err.message,
+						}
+						return reject(resp);
+					}
+					resp = {
+						status: true,
+						nameFile: route
 					}
 					return resolve(resp);
 				});
