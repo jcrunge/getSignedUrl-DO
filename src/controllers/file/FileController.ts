@@ -115,4 +115,79 @@ export default class FileController extends BaseController implements IFileClass
         }
     }
 
+    // delete files older than 1 month
+    public deleteOld: emptyPromiseResponse = async () => {
+        const listedFiles: IS3Response = await this.aws.listObjects(this.fileData);
+
+        if(listedFiles.status){
+            const files: S3.ObjectList = listedFiles.content || [];
+            return this.makeResponse({
+                message: "Delete old method not fully implemented",
+                fileCount: files.length
+            }, 200);
+        }
+        else{
+            return this.makeResponse({
+                error: listedFiles.error || ""
+            }, 500);
+        }
+    }
+
+    public verify: stringPromiseResponse = async (route: string) => {
+        try {
+            const exists: IS3Response = await this.aws.headObject(route);
+            if(exists.status){
+                return this.makeResponse({
+                    exists: true
+                }, 200);
+            }
+            else{
+                return this.makeResponse({
+                    exists: false
+                }, 404);
+            }
+        } catch (error) {
+            return this.makeResponse({
+                exists: false,
+                error: error.message || "File verification failed"
+            }, 404);
+        }
+    }
+
+    public deleteOldFiles: emptyPromiseResponse = async () => {
+        const listedFiles: IS3Response = await this.aws.listObjects(this.fileData);
+        
+        if(listedFiles.status){
+            const files: S3.ObjectList = listedFiles.content || [];
+            const cutoffDate = this.fileData.lastmodified || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000); // 30 days ago
+            
+            const filesToDelete: Array<IS3KeyObject> = files
+                .filter(file => file.LastModified && file.LastModified < cutoffDate)
+                .map(file => ({Key: file.Key || ""}));
+            
+            if(filesToDelete.length === 0) {
+                return this.makeResponse({
+                    message: "No old files to delete",
+                    deletedCount: 0
+                }, 200);
+            }
+            
+            const deletedFiles: IS3Response = await this.aws.deleteObjects(filesToDelete);
+            
+            if(deletedFiles.status){
+                return this.makeResponse({
+                    files: deletedFiles.deleted || [],
+                    deletedCount: filesToDelete.length
+                }, 200);
+            }
+            return this.makeResponse({
+                error: deletedFiles.error || ""
+            }, 500);
+        }
+        else{
+            return this.makeResponse({
+                error: listedFiles.error || ""
+            }, 500);
+        }
+    }
 }

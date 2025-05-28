@@ -86,6 +86,21 @@ fileRouter.get('/list', auth.validAuth, validator.query(listSchema), async (req:
     return res.json(listedFiles.body).status(listedFiles.status)
 });
 
+fileRouter.head('/verify', auth.validAuth, validator.query(listSchema), async (req: ValidatedRequest<listRequestSchema>, res: Response) => {
+    const {folder}  = req.query;
+    const bucket: string | null = req.query.bucket? req.query.bucket : null;
+    const route: string = req.query.route as string || '';
+    
+    const fileData: IFileData = {
+        folder: folder,
+        filename: "*"
+    }
+    if(bucket) fileData.bucket = bucket
+    const fileObject = new FileController(fileData)
+    const verifyResult: ControllerResponse = await fileObject.verify(route)
+    return res.status(verifyResult.status).send()
+});
+
 fileRouter.delete('/deleteAll', auth.validAuth, validator.query(listSchema), async (req: ValidatedRequest<listRequestSchema>, res: Response) => {
     const {folder}  = req.query;
     const bucket: string | null = req.query.bucket? req.query.bucket : null;
@@ -99,5 +114,21 @@ fileRouter.delete('/deleteAll', auth.validAuth, validator.query(listSchema), asy
     return res.json(deletedFiles.body).status(deletedFiles.status)
 });
 
+fileRouter.delete('/deleteOld', auth.validAuth, async (req, res) => {
+    const { folder, bucket } = req.query;
+
+    const fileData = { 
+        folder: folder as string, 
+        bucket: bucket as string,
+        filename: "*",
+        lastmodified: new Date(new Date().setDate(new Date().getDate() - 1))
+    };
+
+    const fileController = new FileController(fileData);
+
+    const response = await fileController.deleteOldFiles();
+    
+    return res.status(response.status).json(response.body);
+});
 
 export default fileRouter
