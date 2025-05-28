@@ -11,10 +11,13 @@ export interface IFileClass {
 	signed: emptyPromiseResponse
 	delete: emptyPromiseResponse
 	copy: stringPromiseResponse
+	verify: stringPromiseResponse
+	deleteOld: emptyPromiseResponse
 }
 
 export interface IFileData {
 	bucket?: string,
 	folder: string,
-	filename: string
+	filename: string,
+	lastmodified?: Date
 }
