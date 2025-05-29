@@ -31,3 +31,5 @@ export const bucketDefault: string = process.env.BUCKET_DEFAULT ? process.env.BU
 export const authToken: string = process.env.AUTH_TOKEN ? process.env.AUTH_TOKEN as string : '';
 
 export const errorManagement: boolean = process.env.ERROR_MANAGEMENT === 'true' ? true : false
+
+export const bucketAccelerate: string = process.env.BUCKET_ACCELERATE ? process.env.BUCKET_ACCELERATE : "";
