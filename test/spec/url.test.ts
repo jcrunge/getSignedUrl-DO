@@ -31,17 +31,24 @@ describe('signed url', () => {
 
     test('if signed url is working', async () => {
         const uploadFile = await fs.readFileSync(__dirname + '/meh.png');
-        const resp = await axios.put(url, {
-            data: uploadFile,
-        }, {
-            headers: {
-                'Content-Type': 'image/png',
-                'x-amz-acl': 'public-read'
-            }
-        }).then((response) => {
-            return response.status
-        })
-        expect(resp).toBe(200);
+        console.log('Uploading to URL:', url);
+        console.log('File size:', uploadFile.length);
+        
+        try {
+            const resp = await axios.put(url, uploadFile, {  // Send file directly, not wrapped in object
+                headers: {
+                    'Content-Type': 'image/png',
+                    'x-amz-acl': 'public-read'
+                },
+                maxBodyLength: Infinity,
+                maxContentLength: Infinity
+            });
+            console.log('Upload successful, status:', resp.status);
+            expect(resp.status).toBe(200);
+        } catch (error) {
+            console.error('Upload failed:', error.response?.status, error.response?.data || error.message);
+            throw error;
+        }
     })
 
     test('if file is successfully copied', async () => {
