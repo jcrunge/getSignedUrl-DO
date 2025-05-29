@@ -115,7 +115,8 @@ export default class Amazon implements IAmazonClass{
 			const s3Params: IS3Copy = {
 				Bucket: this.bucket,
 				Key: `${fileData.folder}/${fileData.filename}`,
-				CopySource: from
+				CopySource: from,
+				ACL: "public-read"
 			};
 			response = await Promise.resolve<IS3Response>(new Bluebird((resolve, reject) => {
 				return this.s3.copyObject(s3Params, (err) => {
@@ -237,15 +238,16 @@ export default class Amazon implements IAmazonClass{
 				Bucket: this.bucket,
 				Key: route
 			};
-			response = await Promise.resolve<IS3Response>(new Bluebird((resolve, reject) => {
+			response = await Promise.resolve<IS3Response>(new Bluebird((resolve) => {
 				return this.s3.headObject(s3Params, (err) => {
 					let resp: IS3Response;
 					if (err) {
+						console.log('AWS headObject error:', err);
 						resp = {
 							status: false,
-					  		error: err.message,
+					  		error: err.code || err.message || 'Unknown AWS error',
 						}
-						return reject(resp);
+						return resolve(resp);
 					}
 					resp = {
 						status: true,
@@ -253,12 +255,6 @@ export default class Amazon implements IAmazonClass{
 					}
 					return resolve(resp);
 				});
-			})
-			.catch((e)=>{
-				return {
-				  status: false,
-				  error: e,
-				};
 			}))
 		}
 		catch(e) {

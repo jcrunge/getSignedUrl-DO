@@ -16,13 +16,16 @@ export default class FileController extends BaseController implements IFileClass
         this.mimetype = mimetype;
         this.fileData = fileData;
         this.aws = new Amazon(fileData.bucket || bucketDefault, {
-            signatureVersion: 'v4',
-            useAccelerateEndpoint: true
+            signatureVersion: 'v4'
         });
 	}
 
     public signed: emptyPromiseResponse = async () => {
-        const signedUrl: IS3Response = await this.aws.getUrl(this.mimetype, this.fileData);
+        const s3WithAcceleration = new Amazon(this.fileData.bucket || bucketDefault, {
+            signatureVersion: 'v4',
+            useAccelerateEndpoint: true
+        });
+        const signedUrl: IS3Response = await s3WithAcceleration.getUrl(this.mimetype, this.fileData);   
         if(signedUrl.status){
             return this.makeResponse({
                 url: signedUrl.url || "", 
