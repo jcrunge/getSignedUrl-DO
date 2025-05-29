@@ -269,5 +269,5 @@ export default class Amazon implements IAmazonClass{
 			};
 		}
 		return response
-    }
+  }
 }

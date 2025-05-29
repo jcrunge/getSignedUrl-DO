@@ -16,7 +16,9 @@ import {
     copySchema,
     copyRequestSchema,
     listSchema,
-    listRequestSchema
+    listRequestSchema,
+    verifySchema,
+    verifyRequestSchema
 } from "./file.routes.valid";
 
 import Middleware from "../../middleware/middleware";
@@ -86,20 +88,25 @@ fileRouter.get('/list', auth.validAuth, validator.query(listSchema), async (req:
     return res.json(listedFiles.body).status(listedFiles.status)
 });
 
-fileRouter.head('/verify', auth.validAuth, validator.query(listSchema), async (req: ValidatedRequest<listRequestSchema>, res: Response) => {
+fileRouter.head('/verify', auth.validAuth, validator.query(verifySchema), async (req: ValidatedRequest<verifyRequestSchema>, res: Response) => {
     const {folder}  = req.query;
     const bucket: string | null = req.query.bucket? req.query.bucket : null;
-    const route: string = req.query.route as string || '';
     
+    // Use route parameter if provided, otherwise use folder as the full path
+    let route: string = req.query.route as string || '';
+    if (!route && folder) {
+        route = folder;
+    }
+        
     const fileData: IFileData = {
-        folder: folder,
+        folder: folder || "",
         filename: "*"
     }
     if(bucket) fileData.bucket = bucket
     const fileObject = new FileController(fileData)
     const verifyResult: ControllerResponse = await fileObject.verify(route)
     return res.status(verifyResult.status).send()
-});
+});     
 
 fileRouter.delete('/deleteAll', auth.validAuth, validator.query(listSchema), async (req: ValidatedRequest<listRequestSchema>, res: Response) => {
     const {folder}  = req.query;

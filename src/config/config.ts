@@ -5,7 +5,8 @@ dotenv.config()
 interface AmazonCredentials {
     client_id: string,
     client_secret: string,
-    region: string
+    region: string,
+    endpoint?: string
 }
 
 /**
@@ -21,7 +22,8 @@ export const PORT: number = __prod__ ? parseInt(process.env.PORT as string, 10) 
 export const AWSCredentials: AmazonCredentials = {
     client_id: process.env.AWS_ACCESS_KEY_ID ? process.env.AWS_ACCESS_KEY_ID as string : '',
     client_secret: process.env.AWS_SECRET_ACCESS_KEY ? process.env.AWS_SECRET_ACCESS_KEY as string : '',
-    region: process.env.AWS_REGION ? process.env.AWS_REGION as string : ''
+    region: process.env.AWS_REGION ? process.env.AWS_REGION as string : '',
+    endpoint: process.env.AWS_ENDPOINT ? process.env.AWS_ENDPOINT as string : undefined
 };
 
 export const bucketDefault: string = process.env.BUCKET_DEFAULT ? process.env.BUCKET_DEFAULT as string : '';

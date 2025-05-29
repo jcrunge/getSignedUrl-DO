@@ -62,3 +62,17 @@ export interface listRequestSchema extends ValidatedRequestSchema {
         bucket?: string
     }
 }
+
+export const verifySchema = Joi.object({
+    folder: Joi.string(),
+    bucket: Joi.string(),
+    route: Joi.string()
+})
+
+export interface verifyRequestSchema extends ValidatedRequestSchema {
+    [ContainerTypes.Query]: {
+        folder?: string,
+        bucket?: string,
+        route?: string
+    }
+}

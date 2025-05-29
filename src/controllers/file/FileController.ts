@@ -32,19 +32,24 @@ export default class FileController extends BaseController implements IFileClass
 	}
 
     public signed: emptyPromiseResponse = async () => {
-        const signedUrl: IS3Response = await this.aws.getUrl(this.mimetype, this.fileData);
-        if(signedUrl.status){
+        try {
+            const signedUrl: IS3Response = await this.aws.getUrl(this.mimetype, this.fileData);   
+            if(signedUrl.status){
+                return this.makeResponse({
+                    url: signedUrl.url || "", 
+                    name: signedUrl.nameFile || ""
+                }, 200);
+            }
+            else{
+                return this.makeResponse({
+                    error: signedUrl.error || ""
+                }, 500);
+            }
+        } catch (error) {
             return this.makeResponse({
-                url: signedUrl.url || "", 
-                name: signedUrl.nameFile || ""
-            }, 200);
-        }
-        else{
-            return this.makeResponse({
-                error: signedUrl.error || ""
+                error: error.message || "Failed to generate signed URL"
             }, 500);
         }
-        
     }
 
     public delete: emptyPromiseResponse = async () => {
