@@ -89,6 +89,9 @@ fileRouter.get('/list', auth.validAuth, validator.query(listSchema), async (req:
 });
 
 fileRouter.get('/verify', auth.validAuth, validator.query(verifySchema), async (req: ValidatedRequest<verifyRequestSchema>, res: Response) => {
+    console.log('verify')
+    console.log(req.query)
+    
     const {folder}  = req.query;
     const bucket: string | null = req.query.bucket? req.query.bucket : null;
     // Use route parameter if provided, otherwise use folder as the full path
