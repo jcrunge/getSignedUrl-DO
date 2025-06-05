@@ -31,14 +31,17 @@ export interface IS3Params {
 	ACL?: string,
 	Key: string,
 	ContentType?: string,
-	CopySource?: string
+	CopySource?: string,
+	Tagging?: string
 }
 
 export interface IS3Copy {
 	Bucket: string,
 	Key: string,
 	CopySource: string,
-	ACL?: string
+	ACL?: string,
+	Tagging?: string,
+	TaggingDirective?: 'COPY' | 'REPLACE'
 }
 
 export interface IS3List {

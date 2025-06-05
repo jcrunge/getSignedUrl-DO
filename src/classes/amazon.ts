@@ -33,9 +33,10 @@ export default class Amazon implements IAmazonClass{
 				Expires: 60 * 60,
 				ACL: "public-read",
 				Key: `${fileData.folder}/${fileData.filename}`,
-				ContentType: mimetype
+				ContentType: mimetype,
+				Tagging: "public=yes"
 			};
-			response = await Promise.resolve<IS3Response>(new Bluebird((resolve, reject) => {
+			response = await new Bluebird((resolve) => {
 				return this.s3.getSignedUrl("putObject", s3Params, (err, url) => {
 					let resp: IS3Response;
 					if (err) {
@@ -43,7 +44,7 @@ export default class Amazon implements IAmazonClass{
 							status: false,
 					  		error: err.message,
 						}
-						return reject(resp);
+						return resolve(resp);
 					}
 					resp = {
 						status: true,
@@ -52,18 +53,12 @@ export default class Amazon implements IAmazonClass{
 					}
 					return resolve(resp);
 				});
-			})
-			.catch((e)=>{
-				return {
-				  status: false,
-				  error: e,
-				};
-			}))
+			});
 		}
 		catch(e) {
 			response = {
 				status: false,
-				error: e,
+				error: e instanceof Error ? e.message : String(e),
 			};
 		}
 		return response
@@ -76,7 +71,7 @@ export default class Amazon implements IAmazonClass{
 				Bucket: this.bucket,
 				Key: `${fileData.folder}/${fileData.filename}`,
 			};
-			response = await Promise.resolve<IS3Response>(new Bluebird((resolve, reject) => {
+			response = await new Bluebird((resolve) => {
 				return this.s3.deleteObject(s3Params, (err) => {
 					let resp: IS3Response;
 					if (err) {
@@ -84,7 +79,7 @@ export default class Amazon implements IAmazonClass{
 							status: false,
 					  		error: err.message,
 						}
-						return reject(resp);
+						return resolve(resp);
 					}
 					resp = {
 						status: true,
@@ -92,18 +87,12 @@ export default class Amazon implements IAmazonClass{
 					}
 					return resolve(resp);
 				});
-			})
-			.catch((e)=>{
-				return {
-				  status: false,
-				  error: e,
-				};
-			}))
+			});
 		}
 		catch(e) {
 			response = {
 				status: false,
-				error: e,
+				error: e instanceof Error ? e.message : String(e),
 			};
 		}
 		return response
@@ -116,9 +105,11 @@ export default class Amazon implements IAmazonClass{
 				Bucket: this.bucket,
 				Key: `${fileData.folder}/${fileData.filename}`,
 				CopySource: from,
-				ACL: "public-read"
+				ACL: "public-read",
+				Tagging: "public=yes",
+				TaggingDirective: "REPLACE"
 			};
-			response = await Promise.resolve<IS3Response>(new Bluebird((resolve, reject) => {
+			response = await new Bluebird((resolve) => {
 				return this.s3.copyObject(s3Params, (err) => {
 					let resp: IS3Response;
 					if (err) {
@@ -126,7 +117,7 @@ export default class Amazon implements IAmazonClass{
 							status: false,
 					  		error: err.message,
 						}
-						return reject(resp);
+						return resolve(resp);
 					}
 					resp = {
 						status: true,
@@ -134,18 +125,12 @@ export default class Amazon implements IAmazonClass{
 					}
 					return resolve(resp);
 				});
-			})
-			.catch((e)=>{
-				return {
-				  status: false,
-				  error: e,
-				};
-			}))
+			});
 		}
 		catch(e) {
 			response = {
 				status: false,
-				error: e,
+				error: e instanceof Error ? e.message : String(e),
 			};
 		}
 		return response
@@ -158,7 +143,7 @@ export default class Amazon implements IAmazonClass{
 				Bucket: this.bucket,
 				Prefix: `${fileData.folder}/`
 			};
-			response = await Promise.resolve<IS3Response>(new Bluebird((resolve, reject) => {
+			response = await new Bluebird((resolve) => {
 				return this.s3.listObjectsV2(s3Params, (err, data) => {
 					let resp: IS3Response;
 					if (err) {
@@ -166,7 +151,7 @@ export default class Amazon implements IAmazonClass{
 							status: false,
 					  		error: err.message,
 						}
-						return reject(resp);
+						return resolve(resp);
 					}
 					resp = {
 						status: true,
@@ -174,18 +159,12 @@ export default class Amazon implements IAmazonClass{
 					}
 					return resolve(resp);
 				});
-			})
-			.catch((e)=>{
-				return {
-				  status: false,
-				  error: e,
-				};
-			}))
+			});
 		}
 		catch(e) {
 			response = {
 				status: false,
-				error: e,
+				error: e instanceof Error ? e.message : String(e),
 			};
 		}
 		return response
@@ -198,7 +177,7 @@ export default class Amazon implements IAmazonClass{
 				Bucket: this.bucket,
 				Delete: {Objects: files}
 			};
-			response = await Promise.resolve<IS3Response>(new Bluebird((resolve, reject) => {
+			response = await new Bluebird((resolve) => {
 				return this.s3.deleteObjects(s3Params, (err, data) => {
 					let resp: IS3Response;
 					if (err) {
@@ -206,7 +185,7 @@ export default class Amazon implements IAmazonClass{
 							status: false,
 					  		error: err.message,
 						}
-						return reject(resp);
+						return resolve(resp);
 					}
 					resp = {
 						status: true,
@@ -214,18 +193,12 @@ export default class Amazon implements IAmazonClass{
 					}
 					return resolve(resp);
 				});
-			})
-			.catch((e)=>{
-				return {
-				  status: false,
-				  error: e,
-				};
-			}))
+			});
 		}
 		catch(e) {
 			response = {
 				status: false,
-				error: e,
+				error: e instanceof Error ? e.message : String(e),
 			};
 		}
 		return response
@@ -238,7 +211,7 @@ export default class Amazon implements IAmazonClass{
 				Bucket: this.bucket,
 				Key: route
 			};
-			response = await Promise.resolve<IS3Response>(new Bluebird((resolve, reject) => {
+			response = await new Bluebird((resolve) => {
 				return this.s3.headObject(s3Params, (err) => {
 					let resp: IS3Response;
 					if (err) {
@@ -246,7 +219,7 @@ export default class Amazon implements IAmazonClass{
 							status: false,
 					  		error: err.message,
 						}
-						return reject(resp);
+						return resolve(resp);
 					}
 					resp = {
 						status: true,
@@ -254,20 +227,14 @@ export default class Amazon implements IAmazonClass{
 					}
 					return resolve(resp);
 				});
-			})
-			.catch((e)=>{
-				return {
-				  status: false,
-				  error: e,
-				};
-			}))
+			});
 		}
 		catch(e) {
 			response = {
 				status: false,
-				error: e,
+				error: e instanceof Error ? e.message : String(e),
 			};
 		}
 		return response
-  }
+    }
 }
